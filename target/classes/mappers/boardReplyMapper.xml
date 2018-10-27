@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.mapper.BoardReplyMapper">
+
+	<!-- 게시판 댓글 리스트 : select -->
+	<!-- 
+	<select id="list" resultType="ReplyDTO">
+		select * 
+		from board_reply
+		where no = #{no}
+		order by rno desc
+	</select>
+	-->
+	
+	<!-- 게시판 댓글 리스트 : select -->
+	<select id="list" resultType="ReplyDTO">
+		select * from(
+			select rownum rnum, rno, no, content, writer, writeDate
+			from(
+				select * 
+				from board_reply
+				where no = #{no}
+				order by rno desc
+			)
+		)
+		where rnum between #{cri.startRow} and #{cri.endRow}
+	</select>
+	
+	<!-- 글번호에 맞는 총 댓글의 갯수 -->
+	<select id="totalRow" resultType="Integer">
+		select count(*) from board_reply
+		where no = #{no}
+	</select>
+	
+	<!-- 게시판 댓글 달기: insert -->
+	<insert id="write">
+		insert into board_reply(rno, no, content, writer)
+		values(board_reply_seq.nextval, #{no}, #{content},#{writer})
+	</insert>
+	
+	<!-- 게시판 댓글 수정:update -->
+	<update id="update">
+		update board_reply
+		set content = #{content}, updatedate = sysdate
+		where rno = #{rno}
+	</update>
+	
+	<!-- 게시판 댓글 삭제:delete -->
+	<delete id="delete">
+		delete from board_reply
+		where rno = #{rno}
+	</delete>
+	
+</mapper>

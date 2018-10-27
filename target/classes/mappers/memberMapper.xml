@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.mapper.MemberMapper">
+
+	<!-- 회원로그인 : select -->
+	<select id="login" resultType="org.zerock.member.dto.LoginDTO">
+		select tu.id, tu.name, tu.point, tu.gno, tg.gname
+		from tbl_user tu, tbl_grade tg
+		where (id=#{id} and pw=#{pw}) and (tu.gno = tg.gno)
+	</select>
+	
+	
+	
+</mapper>

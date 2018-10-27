@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+<typeAliases >
+	<typeAlias alias="boardDTO" type="org.zerock.board.dto.BoardDTO"/>
+	<package name="org.zerock.board.dto"/>
+	<package name="org.zerock.data.dto"/>
+</typeAliases>
+</configuration>

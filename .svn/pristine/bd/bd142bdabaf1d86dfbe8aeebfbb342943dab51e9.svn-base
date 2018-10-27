@@ -1,0 +1,81 @@
+package org.zerock.data.dao;
+
+import java.util.List;
+import javax.inject.Inject;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Repository;
+import org.zerock.board.dto.Criteria;
+import org.zerock.data.dto.DataDTO;
+
+@Repository
+public class DataDAOImpl implements DataDAO {
+
+	@Inject
+	private SqlSession sqlSession;
+	
+	private static final String NAMESPACE 
+	= "org.zerock.mapper.DataMapper.";
+	
+	// 자료실 리스트
+	public List<DataDTO> list(Criteria cri) {
+		System.out.println(getClass().getSimpleName()+".list()");
+		return sqlSession.selectList
+				(NAMESPACE+"list", cri);
+	}
+
+	// 자료실 글보기, 글 수정 폼 - 글번호가 필요하다. 파라메터로 전달 받는다.
+	public DataDTO view(Integer no) {
+		// TODO Auto-generated method stub
+		System.out.println(getClass().getSimpleName()+".view()");
+		return sqlSession.selectOne
+		(NAMESPACE+"view", no);
+	}
+	
+	// 자료실 글쓰기 
+	public void insert(DataDTO dataDTO) {
+		// TODO Auto-generated method stub
+		System.out.println(getClass().getSimpleName()+".insert()");
+		sqlSession.insert
+		(NAMESPACE+"insert", dataDTO);
+	}
+	
+	// 자료실 글수정 처리
+	public void update(DataDTO dataDTO) {
+		// TODO Auto-generated method stub
+		System.out.println(getClass().getSimpleName()+".update()");
+		sqlSession.update
+		(NAMESPACE+"update", dataDTO);
+	}
+	
+	// 자료실 글보기 1 증가 처리
+	public void increase(Integer no) {
+		// TODO Auto-generated method stub
+		System.out.println(getClass().getSimpleName()+".increase()");
+		sqlSession.update
+		(NAMESPACE+"increase", no);
+	}
+	
+	// 자료실 글삭제 - 글번호를 받아서 처리
+	public void delete(Integer no) {
+		// TODO Auto-generated method stub
+		System.out.println(getClass().getSimpleName()+".delete()");
+		sqlSession.delete
+		(NAMESPACE+"delete", no);
+	}
+
+	// 게시판 전체 글의 갯수 구하는 메서드
+	public Integer getTotalCount(Criteria cri) {
+		// TODO Auto-generated method stub
+		System.out.println(getClass().getSimpleName()+".getTotalCount()");
+		return sqlSession.selectOne
+		(NAMESPACE+"totalCount", cri);
+	}
+
+	@Override
+	public void insertFile(DataDTO dataDTO) {
+		// TODO Auto-generated method stub
+		sqlSession.insert(NAMESPACE+"insertFile", dataDTO);
+	}
+	
+}

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.mapper.DataMapper">
+
+	<!-- 자료실 리스트 : select -->
+	<select id="list" resultType="DataDTO">
+		
+		select no, title, filecnt, writer, writeDate, hit
+		from data
+		order by no desc
+		
+	</select>
+	
+	<!-- 자료실 글보기 : select =>view, update form -->
+	<select id="view" resultType="DataDTO">
+		select no, title, content, writer, writeDate, hit, filecnt
+		from data
+		where no = #{no}
+	</select>
+	
+	<!-- 자료실 글보기 파일 : select =>view, update form -->
+	<select id="viewFiles" resultType="AttachFile">
+		select fno, no, fileName, regDate
+		from data_file
+		where no = #{no}
+	</select>
+	
+	<!-- 자료실 글보기 1증가 : update -->
+	<update id="increase">
+		update data set hit = hit + 1
+		where no = #{no}
+	</update>
+	
+	<!-- 자료실 글쓰기 : insert -->
+	<insert id="insert">
+		insert into data(no, title, content, writer, filecnt)
+		values(data_seq.nextval, #{title},#{content},#{writer}, #{filecnt})
+	</insert>
+	
+	<!-- 자료실 첨부파일 쓰기 : insert ==> 자료실 글쓰기와 동시에, 수정 첨부 파일만 따로 -->
+	<insert id="insertFile">
+		insert into data_file(fno, no, fileName)
+		values(data_file_seq.nextval, (select max(no) from data),
+ 		#{savedFile})
+	</insert>
+	
+	<!-- 게시판 글수정 처리 : update -->
+	<update id="update">
+		update data 
+		set title = #{title}, content = #{content},	writer = #{writer}
+		where no = #{no}
+	</update>
+	
+	<!-- 게시판 글삭제 처리 : delete -->
+	<delete id="delete">
+		delete from data
+		where no = #{no}
+	</delete>
+	
+	<!-- 전체 데이터의 갯수를 세는 처리 -->
+	<select id="totalCount" resultType="Integer">
+		select count(*) from data
+		where no > 0
+		<include refid="search"></include>
+	</select>
+	
+	<!-- 검색을 위한 조건 처리문 : list, totalCount에서 각각 사용한다. -->
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">
+				and ( title like '%' || #{keyword} || '%' )
+			</if>
+			<if test="searchType == 'c'.toString()">
+				and ( content like '%' || #{keyword} || '%' )
+			</if>
+			<if test="searchType == 'w'.toString()">
+				and ( writer like '%' || #{keyword} || '%' )
+			</if>
+			<if test="searchType == 'tc'.toString()">
+				and ( title like '%' || #{keyword} || '%'
+				or content like '%' || #{keyword} || '%' )
+			</if>
+			<if test="searchType == 'cw'.toString()">
+				and ( content like '%' || #{keyword} || '%'
+				or writer like '%' || #{keyword} || '%' )
+			</if>
+			<if test="searchType == 'tcw'.toString()">
+				and ( title like '%' || #{keyword} || '%'
+				or content like '%' || #{keyword} || '%'
+				or writer like '%' || #{keyword} || '%' )
+			</if>
+		</if>
+	</sql>
+	
+	
+	
+</mapper>
